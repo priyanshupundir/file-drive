@@ -27,6 +27,7 @@ export async function hasAccessToOrg(
   const identity = await ctx.auth.getUserIdentity();
 
   if (!identity) {
+    console.log("DEBUG: No identity found");
     return null;
   }
 
@@ -38,14 +39,21 @@ export async function hasAccessToOrg(
     .first();
 
   if (!user) {
+    console.log("DEBUG: User not found for tokenIdentifier:", identity.tokenIdentifier);
     return null;
   }
 
-  const hasAccess =
-    user.orgIds.some((item) => item.orgId === orgId) ||
-    user.tokenIdentifier.includes(orgId);
+  console.log("DEBUG: User found:", user.tokenIdentifier);
+  console.log("DEBUG: User orgIds:", user.orgIds);
+  console.log("DEBUG: Looking for orgId:", orgId);
+
+  // Only check if user is a member of the org
+  const hasAccess = user.orgIds.some((item) => item.orgId === orgId);
+
+  console.log("DEBUG: hasAccess result:", hasAccess);
 
   if (!hasAccess) {
+    console.log("DEBUG: User does not have access to org", orgId);
     return null;
   }
 
@@ -96,11 +104,11 @@ export const getFiles = query({
       .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
       .collect();
 
-    const query = args.query;
+    const queryFilter = args.query;
 
-    if (query) {
+    if (queryFilter) {
       files = files.filter((file) =>
-        file.name.toLowerCase().includes(query.toLowerCase())
+        file.name.toLowerCase().includes(queryFilter.toLowerCase())
       );
     }
 
@@ -161,7 +169,7 @@ function assertCanDeleteFile(user: Doc<"users">, file: Doc<"files">) {
     user.orgIds.find((org) => org.orgId === file.orgId)?.role === "admin";
 
   if (!canDelete) {
-    throw new ConvexError("you have no acces to delete this file");
+    throw new ConvexError("you have no access to delete this file");
   }
 }
 

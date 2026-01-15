@@ -1,9 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    turbo: {
+      rules: {},
+    },
+  },
   images: {
     remotePatterns: [
       {
-        hostname: "adventurous-caiman-790.convex.cloud",
+        protocol: "https",
+        hostname: "**.convex.cloud",
       },
     ],
   },

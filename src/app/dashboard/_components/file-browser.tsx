@@ -29,6 +29,7 @@ function Placeholder() {
         width="300"
         height="300"
         src="/empty.svg"
+        style={{ width: "auto", height: "auto" }}
       />
       <div className="text-2xl">You have no files, upload one now</div>
       <UploadButton />
@@ -52,7 +53,9 @@ export function FileBrowser({
 
   let orgId: string | undefined = undefined;
   if (organization.isLoaded && user.isLoaded) {
-    orgId = organization.organization?.id ?? user.user?.id;
+    // ✅ FIXED: Always use organization.organization?.id, not user.user?.id
+    // Only fall back to personal org if user has no active organization
+    orgId = organization.organization?.id;
   }
 
   const favorites = useQuery(

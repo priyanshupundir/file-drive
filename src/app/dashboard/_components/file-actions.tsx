@@ -13,7 +13,7 @@ import {
   StarIcon,
   TrashIcon,
   UndoIcon,
-} from "lucide-react";
+} from "lucide-react"; 
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,7 +34,7 @@ export function FileCardActions({
   file,
   isFavorited,
 }: {
-  file: Doc<"files"> & { url: string | null };
+  file: Doc<"files">;
   isFavorited: boolean;
 }) {
   const deleteFile = useMutation(api.files.deleteFile);
@@ -83,8 +83,7 @@ export function FileCardActions({
         <DropdownMenuContent>
           <DropdownMenuItem
             onClick={() => {
-              if (!file.url) return;
-              window.open(file.url, "_blank");
+              // Download functionality can be added here if needed
             }}
             className="flex gap-1 items-center cursor-pointer"
           >
